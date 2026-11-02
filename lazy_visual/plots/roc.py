@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 
 from .. import defaults
@@ -47,7 +48,13 @@ def roc(data, *, y_true, y_score, ci=True, ci_method="delong", ci_level=0.95,
         fpr, tpr, stat = compute_roc(y_bin, df[col].to_numpy(float),
             ci=ci, ci_method=ci_method, ci_level=ci_level,
             n_boot=nb, random_state=seed)
-        ax.plot(fpr, tpr, color=palette[i % len(palette)], lw=lw,
+        # thin very dense curves for fast rendering (AUC from full curve)
+        if len(fpr) > 1500:
+            idx = np.linspace(0, len(fpr) - 1, 1500).astype(int)
+            fpr_plot, tpr_plot = fpr[idx], tpr[idx]
+        else:
+            fpr_plot, tpr_plot = fpr, tpr
+        ax.plot(fpr_plot, tpr_plot, color=palette[i % len(palette)], lw=lw,
                 label=_label(col, stat))
         stats.append(stat)
     if show_diagonal:
