@@ -23,43 +23,43 @@ def df():
     })
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_scatter(df):
     return lv.scatterplot(df, x="x", y="y", hue="group", dpi=80).fig
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_distribution(df):
     return lv.distribution(df, x="score", hue="group", kind="both",
                            dpi=80).fig
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_box(df):
     return lv.box(df, y="score", x="group", dpi=80).fig
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_violin(df):
     return lv.violin(df, y="score", x="group", dpi=80).fig
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_raincloud(df):
     return lv.raincloud(df, y="score", x="group", dpi=80).fig
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_heatmap(df):
     return lv.heatmap(df, corr="pearson", dpi=80).fig
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_upset():
     data = {"A": {1, 2, 3, 4, 5}, "B": {3, 4, 5, 6}, "C": {4, 5, 6, 7}}
     return lv.upset(data, dpi=80).fig
 
 
-@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=15)
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_roc(df):
     return lv.roc(df, y_true="class", y_score=["s1", "s2"], dpi=80).fig

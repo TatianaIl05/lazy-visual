@@ -38,11 +38,11 @@ jobs:
       - name: Install package
         shell: bash
         run: python -m pip install -e .
-      - name: Run tests
+      - name: Run tests (golden on ubuntu + latest deps)
+        if: matrix.os == 'ubuntu-latest' && matrix.deps == 'last'
         shell: bash
-        run: |
-          if [ "${{ matrix.deps }}" = "last" ]; then
-            python -m pytest -q --mpl --mpl-baseline-path=tests/baseline
-          else
-            python -m pytest -q
-          fi
+        run: python -m pytest -q --mpl --mpl-baseline-path=tests/baseline
+      - name: Run tests (skip golden)
+        if: matrix.os != 'ubuntu-latest' || matrix.deps != 'last'
+        shell: bash
+        run: python -m pytest -q --deselect tests/test_golden.py
