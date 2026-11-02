@@ -23,43 +23,86 @@ def df():
     })
 
 
+COMMON = dict(theme="nature", dpi=80)
+
+
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_scatter(df):
-    return lv.scatterplot(df, x="x", y="y", hue="group", dpi=80).fig
+    return lv.scatterplot(
+        df, x="x", y="y", hue="group", fit="linear",
+        title="Scatter: x vs y by group",
+        xlabel="x", ylabel="y",
+        **COMMON,
+    ).fig
 
 
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_distribution(df):
-    return lv.distribution(df, x="score", hue="group", kind="both",
-                           dpi=80).fig
+    return lv.distribution(
+        df, x="score", hue="group", kind="both",
+        title="Score distribution by group",
+        xlabel="score", ylabel="density",
+        **COMMON,
+    ).fig
 
 
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_box(df):
-    return lv.box(df, y="score", x="group", dpi=80).fig
+    return lv.box(
+        df, y="score", x="group",
+        pairs=[("a", "b"), ("b", "c")],
+        title="Score by group",
+        xlabel="group", ylabel="score",
+        **COMMON,
+    ).fig
 
 
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_violin(df):
-    return lv.violin(df, y="score", x="group", dpi=80).fig
+    return lv.violin(
+        df, y="score", x="group",
+        pairs=[("a", "b"), ("b", "c")],
+        title="Score by group",
+        xlabel="group", ylabel="score",
+        **COMMON,
+    ).fig
 
 
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_raincloud(df):
-    return lv.raincloud(df, y="score", x="group", dpi=80).fig
+    return lv.raincloud(
+        df, y="score", x="group",
+        pairs=[("a", "b"), ("b", "c")],
+        title="Raincloud: score by group",
+        xlabel="group", ylabel="score",
+        **COMMON,
+    ).fig
 
 
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_heatmap(df):
-    return lv.heatmap(df, corr="pearson", dpi=80).fig
+    return lv.heatmap(
+        df, corr="pearson",
+        title="Pearson correlation",
+        **COMMON,
+    ).fig
 
 
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_upset():
     data = {"A": {1, 2, 3, 4, 5}, "B": {3, 4, 5, 6}, "C": {4, 5, 6, 7}}
-    return lv.upset(data, dpi=80).fig
+    return lv.upset(
+        data,
+        title="Intersections across A / B / C",
+        **COMMON,
+    ).fig
 
 
 @pytest.mark.mpl_image_compare(baseline_dir="baseline", tolerance=25)
 def test_golden_roc(df):
-    return lv.roc(df, y_true="class", y_score=["s1", "s2"], dpi=80).fig
+    return lv.roc(
+        df, y_true="class", y_score=["s1", "s2"],
+        title="ROC curves (DeLong CI)",
+        xlabel="FPR", ylabel="TPR",
+        **COMMON,
+    ).fig
