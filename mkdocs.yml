@@ -1,6 +1,23 @@
 site_name: lazy-visual
+site_url: https://tatianail05.github.io/lazy-visual/
+repo_url: https://github.com/TatianaIl05/lazy-visual
 theme:
   name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.highlight
 nav:
   - Home: index.md
   - Install: install.md
@@ -9,3 +26,4 @@ nav:
   - Themes: themes.md
   - API: api.md
   - Error codes: errors.md
+  - Changelog: changelog.md
