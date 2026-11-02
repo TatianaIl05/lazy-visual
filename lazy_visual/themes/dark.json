@@ -1,0 +1,4 @@
+{"name": "dark", "font_family": ["DejaVu Sans"],
+ "font_size": 10.0, "palette": "viridis", "linewidth": 1.0, "alpha": 0.85,
+ "grid": true, "spines": ["left", "bottom"], "background": "#1e1e1e",
+ "figsize": [6.0, 4.0], "dpi": 150}

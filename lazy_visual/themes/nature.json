@@ -1,0 +1,5 @@
+{"name": "nature",
+ "font_family": ["Arial", "Helvetica", "DejaVu Sans"],
+ "font_size": 7.0, "palette": "okabe", "linewidth": 0.75, "alpha": 0.8,
+ "grid": false, "spines": ["left", "bottom"], "background": "white",
+ "figsize": [3.5, 2.6], "dpi": 300}

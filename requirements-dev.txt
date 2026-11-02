@@ -1,0 +1,4 @@
+pytest
+pytest-socket
+mypy
+ruff

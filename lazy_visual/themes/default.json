@@ -1,0 +1,4 @@
+{"name": "default", "font_family": ["DejaVu Sans"],
+ "font_size": 10.0, "palette": "tab10", "linewidth": 1.0, "alpha": 0.85,
+ "grid": true, "spines": ["left", "bottom", "top", "right"],
+ "background": "white", "figsize": [6.0, 4.0], "dpi": 150}
