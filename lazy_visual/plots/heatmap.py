@@ -1,15 +1,20 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
 from .. import defaults
 from .._errors import err_incompatible_args
+from ..core.result import LvResult
 from ..core.spec import AxesSpec, Layer, PlotSpec
 from ..core.style import apply_mpl_theme, resolve
 from ..io.normalize import prepare
 from ..render.mpl import new_figure
-from ._common import apply_labels, build_style, finalize_result
+from ._common import apply_labels, build_style, check_rows, finalize_result
+
+
+def _annot_color(val, vmax):
+    return "white" if abs(val) > 0.6 * vmax else "black"
 
 
 def heatmap(data, *, x=None, y=None, value=None, corr=None, annot=None,
@@ -18,7 +23,7 @@ def heatmap(data, *, x=None, y=None, value=None, corr=None, annot=None,
     t, _ = resolve(st)
     apply_mpl_theme(t)
     if corr is not None and value is not None:
-        raise err_incompatible_args("Cannot use 'corr' together with 'value'.")
+        raise err_incompatible_args("Cannot use 'corr' with 'value'.")
     if corr is not None:
         df = data if isinstance(data, pd.DataFrame) else prepare(data, [], dropna=False)[0]
         matrix = df.select_dtypes(include=[np.number]).corr(method=corr)
@@ -27,7 +32,8 @@ def heatmap(data, *, x=None, y=None, value=None, corr=None, annot=None,
     elif x and y and value:
         df, _ = prepare(data, [x, y, value], numeric=[value],
                         categorical=[x, y])
-        matrix = df.pivot_table(index=y, columns=x, values=value, aggfunc="mean", observed=True)
+        matrix = df.pivot_table(index=y, columns=x, values=value,
+                                aggfunc="mean", observed=True)
         xlab, ylab = x, y
         diverging = False
     elif isinstance(data, pd.DataFrame):
@@ -37,19 +43,36 @@ def heatmap(data, *, x=None, y=None, value=None, corr=None, annot=None,
     else:
         raise err_incompatible_args(
             "heatmap needs corr=..., (x,y,value)=..., or a numeric DataFrame.")
+
+    check_rows(matrix.reset_index())
     fig, ax = new_figure(st.figsize or t.figsize, st.dpi or t.dpi, st.ax)
+
+    # diverging: red (positive) -> white -> blue (negative), seaborn-style
     cmap_name = cmap or ("RdBu_r" if diverging else "viridis")
     arr = matrix.to_numpy(float)
+
     if diverging:
-        vmax = np.nanmax(np.abs(arr)) if arr.size else 1.0
-        im = ax.imshow(arr, cmap=cmap_name, vmin=-vmax, vmax=vmax, aspect="auto")
+        finite = arr[np.isfinite(arr)]
+        if finite.size:
+            vmax = float(np.percentile(np.abs(finite), 95))
+            vmax = max(0.3, min(1.0, vmax))
+        else:
+            vmax = 1.0
+        im = ax.imshow(arr, cmap=cmap_name, vmin=-vmax, vmax=vmax,
+                       aspect="auto")
+        threshold = vmax
     else:
         im = ax.imshow(arr, cmap=cmap_name, aspect="auto")
+        threshold = float(np.nanmax(np.abs(arr))) if arr.size else 1.0
+
     fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+
     ax.set_xticks(range(matrix.shape[1]))
-    ax.set_xticklabels([str(c) for c in matrix.columns], rotation=45, ha="right")
+    ax.set_xticklabels([str(c) for c in matrix.columns], rotation=45,
+                       ha="right", fontsize=8)
     ax.set_yticks(range(matrix.shape[0]))
-    ax.set_yticklabels([str(i) for i in matrix.index])
+    ax.set_yticklabels([str(i) for i in matrix.index], fontsize=8)
+
     show_annot = annot if annot is not None else (
         arr.size and arr.shape[0] <= defaults.HEATMAP_ANNOT_LIMIT
         and arr.shape[1] <= defaults.HEATMAP_ANNOT_LIMIT)
@@ -59,10 +82,15 @@ def heatmap(data, *, x=None, y=None, value=None, corr=None, annot=None,
                 v = arr[i, j]
                 if np.isfinite(v):
                     ax.text(j, i, f"{v:.2f}", ha="center", va="center",
-                            fontsize=7, color="black")
+                            fontsize=8, color=_annot_color(v, threshold))
+
+    fig.subplots_adjust(left=0.18, bottom=0.18)
+
     spec = PlotSpec(kind="heatmap",
-        layers=[Layer("rect", {"matrix_shape": arr.shape})],
-        axes=AxesSpec(xlabel=st.xlabel or xlab, ylabel=st.ylabel or ylab,
-                      title=st.title))
+                    layers=[Layer("rect", {"matrix_shape": arr.shape})],
+                    axes=AxesSpec(xlabel=st.xlabel or xlab,
+                                  ylabel=st.ylabel or ylab,
+                                  title=st.title))
     apply_labels(ax, spec, st)
     return finalize_result(fig, ax, spec, st, tables={"matrix": matrix})
+

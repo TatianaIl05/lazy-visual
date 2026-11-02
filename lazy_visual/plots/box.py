@@ -84,18 +84,42 @@ def _box_or_violin(data, *, y, x, test, pairs, kind, **style) -> LvResult:
                 f.set_alpha(0.7)
                 f.set_zorder(2)
         else:
-            parts = ax.violinplot(groups, showmedians=True, widths=0.8)
+            parts = ax.violinplot(groups, showmedians=False,
+                                  showextrema=False, widths=0.8)
             for i, pc in enumerate(parts["bodies"]):
                 pc.set_facecolor(palette[i % len(palette)])
                 pc.set_alpha(alpha)
                 pc.set_edgecolor("black")
                 pc.set_linewidth(lw)
+            # draw box-plot inner structure (whiskers, IQR, median) in black
+            for i, g in enumerate(groups):
+                if len(g) < 2:
+                    continue
+                g = np.asarray(g, float)
+                q1, med, q3 = np.percentile(g, [25, 50, 75])
+                iqr = q3 - q1
+                lo = max(g.min(), q1 - 1.5 * iqr)
+                hi = min(g.max(), q3 + 1.5 * iqr)
+                xpos = i + 1
+                # thin whisker lines
+                ax.vlines(xpos, lo, q1, color="black", lw=lw * 0.8, zorder=3)
+                ax.vlines(xpos, q3, hi, color="black", lw=lw * 0.8, zorder=3)
+                # wide caps at whisker ends
+                ax.hlines(lo, xpos - 0.10, xpos + 0.10,
+                          color="black", lw=lw * 1.2, zorder=4)
+                ax.hlines(hi, xpos - 0.10, xpos + 0.10,
+                          color="black", lw=lw * 1.2, zorder=4)
+                # thick IQR bar (clearly thicker than whiskers)
+                ax.vlines(xpos, q1, q3, color="black", lw=lw * 3.0, zorder=3)
+                # thick median, wider than the IQR bar
+                ax.hlines(med, xpos - 0.13, xpos + 0.13,
+                          color="black", lw=lw * 2.0, zorder=4)
             ax.set_xticks(range(1, len(labels) + 1))
             ax.set_xticklabels(labels)
         stats = compare_groups(df, y=y, x=x, test=test, pairs=pairs,
                                random_state=get_options().random_state)
         if st.annotate and stats:
-            _draw_brackets(ax, cats, stats)
+            _draw_brackets(ax, cats, stats, offset=1.0)
     else:
         ax.boxplot([df[y].to_numpy()], **_boxplot_kwargs([y]),
                    patch_artist=True)
@@ -106,7 +130,7 @@ def _box_or_violin(data, *, y, x, test, pairs, kind, **style) -> LvResult:
     return finalize_result(fig, ax, spec, st, stats=stats)
 
 
-def _draw_brackets(ax, cats, stats):
+def _draw_brackets(ax, cats, stats, offset=0.0):
     pairs = [s for s in stats
              if s.groups and len(s.groups) == 2
              and s.groups[0] in cats and s.groups[1] in cats]
@@ -116,12 +140,12 @@ def _draw_brackets(ax, cats, stats):
     span = ymax - ymin
     n = len(pairs)
     # generous spacing: each bracket gets >= 10% of span, or 0.5/n + 0.05
-    step = span * (0.08 + 0.02 / n)
+    step = span * max(0.06, 0.04 + 0.02 / n)
     base = ymax
-    idx_map = {c: i + 1 for i, c in enumerate(cats)}
+    idx_map = {c: i for i, c in enumerate(cats)}
     for i, s in enumerate(pairs):
         g1, g2 = s.groups
-        a, b = idx_map[g1], idx_map[g2]
+        a, b = idx_map[g1] + offset, idx_map[g2] + offset
         lo, hi = min(a, b), max(a, b)
         yb = base + step * (i + 1)
         ax.plot([lo, lo, hi, hi],
@@ -130,10 +154,8 @@ def _draw_brackets(ax, cats, stats):
         label = format_p(
             s.p_adjusted if s.p_adjusted is not None else s.p_value)
         d = format_d(s.effect_size)
-        text = f"{label}, {d}" if d else label
-        ax.text((lo + hi) / 2, yb + step * 0.42, text,
+        text = f"{label}\n{d}" if d else label
+        ax.text((lo + hi) / 2, yb + step * 0.25, text,
                 ha="center", va="bottom", fontsize=6,
-                linespacing=1.4,
-                bbox=dict(boxstyle="round,pad=0.15",
-                          facecolor="white", edgecolor="none", alpha=0.85))
+                linespacing=1.3)
     ax.set_ylim(top=base + step * (n + 1.0))

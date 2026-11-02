@@ -33,7 +33,11 @@ def roc(data, *, y_true, y_score, ci=True, ci_method="delong", ci_level=0.95,
     if len(classes) != 2:
         raise err_y_true_not_binary(list(classes))
     y_bin = (df[y_true] == classes[1]).to_numpy(int)
-    fig, ax = new_figure(st.figsize or t.figsize, st.dpi or t.dpi, st.ax)
+    n_models = len(scores)
+    _w, _h = st.figsize or t.figsize
+    if n_models > 1 and _w < 4.5:
+        _w = max(_w, 4.5)
+    fig, ax = new_figure((_w, _h), st.dpi or t.dpi, st.ax)
     palette = t.palette_colors()
     lw = st.linewidth if st.linewidth is not None else t.linewidth
     nb = n_boot if n_boot is not None else get_options().n_boot
@@ -54,7 +58,14 @@ def roc(data, *, y_true, y_score, ci=True, ci_method="delong", ci_level=0.95,
     ax.set_ylim(-0.01, 1.01)
     ax.set_aspect("equal")
     if st.show_legend:
-        ax.legend(loc="lower right", frameon=False, fontsize=8)
+        ax.legend(
+            loc="center left",
+            bbox_to_anchor=(1.02, 0.5),
+            frameon=False,
+            fontsize=7,
+            title="model: AUC [95% CI]",
+            title_fontsize=7,
+        )
     spec = PlotSpec(kind="roc", layers=[Layer("line", {"models": scores})],
                     axes=AxesSpec(xlabel="FPR", ylabel="TPR", title=st.title))
     apply_labels(ax, spec, st)
