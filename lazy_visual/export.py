@@ -26,7 +26,13 @@ def _atomic_save(fig, target, fmt, dpi):
     fd, tmp = tempfile.mkstemp(suffix=f".{fmt}", dir=str(target.parent))
     os.close(fd)
     try:
-        fig.savefig(tmp, format=fmt, dpi=dpi, bbox_inches="tight")
+        extra = [a.get_legend() for a in fig.axes if a.get_legend()]
+        if extra:
+            fig.savefig(tmp, format=fmt, dpi=dpi,
+                        bbox_inches="tight",
+                        bbox_extra_artists=extra)
+        else:
+            fig.savefig(tmp, format=fmt, dpi=dpi, bbox_inches="tight")
         os.replace(tmp, target)
     except PermissionError as e:
         try: os.unlink(tmp)
