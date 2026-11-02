@@ -11,3 +11,5 @@ venv/
 *.png
 *.csv
 .DS_Store
+
+!tests/baseline/*.png
