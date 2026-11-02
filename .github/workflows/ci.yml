@@ -16,6 +16,9 @@ jobs:
         python: ["3.10", "3.12", "3.13"]
         deps: ["min", "last"]
         exclude:
+          # 3.12 and 3.13 have no wheels for numpy 1.24 / pandas 1.5 / mpl 3.7
+          - python: "3.12"
+            deps: "min"
           - python: "3.13"
             deps: "min"
     steps:
