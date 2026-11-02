@@ -40,6 +40,11 @@ def _box_or_violin(data, *, y, x, test, pairs, kind, **style) -> LvResult:
     check_rows(df)
     fig, ax = new_figure(st.figsize or t.figsize, st.dpi or t.dpi, st.ax)
     palette = t.palette_colors()
+    if x is not None:
+        _cats_tmp = ordered_categories(df[x])
+        if len(_cats_tmp) > len(palette):
+            import matplotlib as _mpl
+            palette = [tuple(c) for c in _mpl.colormaps['tab20'].colors]
     alpha = st.alpha if st.alpha is not None else t.alpha
     lw = st.linewidth if st.linewidth is not None else t.linewidth
     stats = []
@@ -52,11 +57,32 @@ def _box_or_violin(data, *, y, x, test, pairs, kind, **style) -> LvResult:
         if kind == "box":
             bp = ax.boxplot(groups, **_boxplot_kwargs(labels),
                             patch_artist=True, widths=0.6,
-                            medianprops=dict(color="black"))
+                            medianprops=dict(color="black", linewidth=1.2))
             for i, patch in enumerate(bp["boxes"]):
-                patch.set_facecolor(palette[i % len(palette)])
+                color = palette[i % len(palette)]
+                patch.set_facecolor(color)
+                patch.set_edgecolor(color)
                 patch.set_alpha(alpha)
                 patch.set_linewidth(lw)
+                patch.set_zorder(2)
+            for i, w in enumerate(bp["whiskers"]):
+                w.set_color(palette[(i // 2) % len(palette)])
+                w.set_linewidth(lw)
+                w.set_zorder(2)
+            for i, c in enumerate(bp["caps"]):
+                c.set_color(palette[(i // 2) % len(palette)])
+                c.set_linewidth(lw)
+                c.set_zorder(2)
+            for i, m in enumerate(bp["medians"]):
+                m.set_color("black")
+                m.set_linewidth(lw * 1.2)
+                m.set_zorder(3)
+            for i, f in enumerate(bp["fliers"]):
+                f.set_markeredgecolor(palette[i % len(palette)])
+                f.set_markerfacecolor(palette[i % len(palette)])
+                f.set_markersize(3)
+                f.set_alpha(0.7)
+                f.set_zorder(2)
         else:
             parts = ax.violinplot(groups, showmedians=True, widths=0.8)
             for i, pc in enumerate(parts["bodies"]):
@@ -81,27 +107,33 @@ def _box_or_violin(data, *, y, x, test, pairs, kind, **style) -> LvResult:
 
 
 def _draw_brackets(ax, cats, stats):
+    pairs = [s for s in stats
+             if s.groups and len(s.groups) == 2
+             and s.groups[0] in cats and s.groups[1] in cats]
+    if not pairs:
+        return
     ymin, ymax = ax.get_ylim()
     span = ymax - ymin
-    step = span * 0.06
+    n = len(pairs)
+    # generous spacing: each bracket gets >= 10% of span, or 0.5/n + 0.05
+    step = span * (0.08 + 0.02 / n)
     base = ymax
     idx_map = {c: i + 1 for i, c in enumerate(cats)}
-    for i, s in enumerate(stats):
-        if not s.groups or len(s.groups) != 2:
-            continue
+    for i, s in enumerate(pairs):
         g1, g2 = s.groups
-        if g1 not in idx_map or g2 not in idx_map:
-            continue
         a, b = idx_map[g1], idx_map[g2]
         lo, hi = min(a, b), max(a, b)
         yb = base + step * (i + 1)
         ax.plot([lo, lo, hi, hi],
-                [yb, yb + step * 0.3, yb + step * 0.3, yb],
+                [yb, yb + step * 0.25, yb + step * 0.25, yb],
                 color="black", lw=1)
         label = format_p(
             s.p_adjusted if s.p_adjusted is not None else s.p_value)
         d = format_d(s.effect_size)
-        text = f"{label}\n{d}" if d else label
-        ax.text((lo + hi) / 2, yb + step * 0.35, text,
-                ha="center", va="bottom", fontsize=8)
-    ax.set_ylim(top=base + step * (len(stats) + 1))
+        text = f"{label}, {d}" if d else label
+        ax.text((lo + hi) / 2, yb + step * 0.42, text,
+                ha="center", va="bottom", fontsize=6,
+                linespacing=1.4,
+                bbox=dict(boxstyle="round,pad=0.15",
+                          facecolor="white", edgecolor="none", alpha=0.85))
+    ax.set_ylim(top=base + step * (n + 1.0))

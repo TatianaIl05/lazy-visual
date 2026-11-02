@@ -37,8 +37,27 @@ def finalize_result(fig, ax, spec, style, stats=None, tables=None):
                     tables=dict(tables or {}), files=files)
 
 def apply_labels(ax, spec, style):
-    if style.title: ax.set_title(style.title)
-    if style.xlabel: ax.set_xlabel(style.xlabel)
-    if style.ylabel: ax.set_ylabel(style.ylabel)
+    from ..core.style import get_theme
+    from .._options import get_options
+
+    if style.title:
+        ax.set_title(style.title, pad=10)
+    if style.xlabel:
+        ax.set_xlabel(style.xlabel)
+    if style.ylabel:
+        ax.set_ylabel(style.ylabel)
     if style.show_grid is not None:
-        ax.grid(style.show_grid)
+        ax.grid(style.show_grid, color="#dddddd", linewidth=0.6)
+        ax.set_axisbelow(True)
+
+    # respect theme spines (mpl rcParams only apply to new axes)
+    theme = style.theme if hasattr(style, "theme") else None
+    if isinstance(theme, str):
+        t = get_theme(theme)
+    else:
+        t = get_theme(get_options().active_theme)
+    for side in ("left", "bottom", "top", "right"):
+        ax.spines[side].set_visible(side in t.spines)
+
+    # no top/right tick marks
+    ax.tick_params(top=False, right=False)

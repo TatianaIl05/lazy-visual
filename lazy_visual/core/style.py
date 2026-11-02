@@ -164,7 +164,9 @@ def resolve(style: StyleArgs) -> tuple[Theme, StyleArgs]:
 
 
 def apply_mpl_theme(t: Theme) -> None:
-    mpl.rcParams["font.family"] = list(t.font_family)
+    available = {f.name for f in mpl.font_manager.fontManager.ttflist}
+    fams = [f for f in t.font_family if f in available] or ["DejaVu Sans"]
+    mpl.rcParams["font.family"] = fams
     mpl.rcParams["font.size"] = t.font_size
     mpl.rcParams["axes.grid"] = t.grid
     mpl.rcParams["axes.facecolor"] = t.background
