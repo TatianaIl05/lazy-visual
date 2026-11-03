@@ -6,7 +6,7 @@
 
 
 
-\- \*\*Название проекта:\*\* `lazy-visual`
+\- \textbf{Название проекта:} `lazy-visual`
 
 \- \*\*Ссылка на работающий MVP:\*\* https://github.com/TatianaIl05/lazy-visual
 
