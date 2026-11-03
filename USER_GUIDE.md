@@ -51,7 +51,7 @@ pip install lazy-visual
 
 ```python
 
-import lazy\_visual as lv
+import lazy_visual as lv
 
 ```
 
@@ -85,7 +85,7 @@ import lazy\_visual as lv
 
 
 
-*Рис. 1. Успешный импорт `lazy\_visual` в Jupyter Notebook - никаких сообщений, библиотека готова к работе.*
+*Рис. 1. Успешный импорт `lazy_visual` в Jupyter Notebook - никаких сообщений, библиотека готова к работе.*
 
 
 
@@ -126,8 +126,8 @@ import lazy_visual as lv
 rng = np.random.default_rng(0)
 
 df = pd.DataFrame({
-  "group": rng.choice(\["control", "drug\_a", "drug\_b"], 300),
-  "score": rng.normal(0, 1, 300) + rng.choice(\[0, 1, 2], 300),
+  "group": rng.choice(["control", "drug_a", "drug_b"], 300),
+  "score": rng.normal(0, 1, 300) + rng.choice([0, 1, 2], 300),
   })
 
 ```
@@ -214,7 +214,7 @@ result = lv.raincloud(
 
 
 
-**Название функции:** `lv.roc(data, y\_true=..., y\_score=...)` - строит ROC-кривые для одной или нескольких моделей и считает AUC с 95% доверительным интервалом методом DeLong.
+**Название функции:** `lv.roc(data, y_true=..., y_score=...)` - строит ROC-кривые для одной или нескольких моделей и считает AUC с 95% доверительным интервалом методом DeLong.
 
 
 
@@ -239,7 +239,7 @@ result = lv.raincloud(
 df = pd.DataFrame({
   "y_true": [0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0],
   "model_a": [0.1, 0.2, 0.75, 0.85, 0.9, 0.15, 0.8, 0.3, 0.7, 0.95, 0.25, 0.2],
-  "model\_b": \[0.2, 0.3, 0.6, 0.7, 0.8, 0.25, 0.75, 0.35, 0.65, 0.85, 0.4, 0.3],
+  "model_b": [0.2, 0.3, 0.6, 0.7, 0.8, 0.25, 0.75, 0.35, 0.65, 0.85, 0.4, 0.3],
 })
 
 ```
@@ -270,7 +270,7 @@ result = lv.roc(
 4. Пользователь получает:
 
 - файл `roc.svg` с кривыми и диагональю;
-- `result.stats` - список `StatResult` с `estimate` (AUC), `ci\_low`, `ci\_high`.
+- `result.stats` - список `StatResult` с `estimate` (AUC), `ci_low`, `ci_high`.
 
 
 
@@ -412,15 +412,15 @@ result = lv.upset(
 
        pattern  size  degree
 
-0  (A, B, C)     2       3
+0   (A, B, C)    2       3
 
-1     (A, B)     1       2
+1      (A, B)    1       2
 
-2        (B, C)  1       2
+2      (B, C)    1       2
 
-3           (A,) 2       1
+3        (A,)    2       1
 
-4           (C,) 1       1
+4        (C,)    1       1
 
 ```
 
