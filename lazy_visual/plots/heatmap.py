@@ -84,13 +84,21 @@ def heatmap(data, *, x=None, y=None, value=None, corr=None, annot=None,
                     ax.text(j, i, f"{v:.2f}", ha="center", va="center",
                             fontsize=8, color=_annot_color(v, threshold))
 
-    fig.subplots_adjust(left=0.18, bottom=0.18)
 
     spec = PlotSpec(kind="heatmap",
                     layers=[Layer("rect", {"matrix_shape": arr.shape})],
                     axes=AxesSpec(xlabel=st.xlabel or xlab,
                                   ylabel=st.ylabel or ylab,
                                   title=st.title))
+    ax.minorticks_off()
+    # heatmap: grid and spines just cover the image, turn them off
+    ax.grid(False)
+    for _side in ('top', 'right'):
+        ax.spines[_side].set_visible(False)
     apply_labels(ax, spec, st)
+    try:
+        fig.tight_layout()
+    except Exception:
+        pass
     return finalize_result(fig, ax, spec, st, tables={"matrix": matrix})
 

@@ -169,6 +169,9 @@ def apply_mpl_theme(t: Theme) -> None:
     mpl.rcParams["font.family"] = fams
     mpl.rcParams["font.size"] = t.font_size
     mpl.rcParams["axes.grid"] = t.grid
+    mpl.rcParams["axes.grid.which"] = "major"
+    mpl.rcParams["xtick.minor.visible"] = False
+    mpl.rcParams["ytick.minor.visible"] = False
     mpl.rcParams["axes.facecolor"] = t.background
     mpl.rcParams["figure.facecolor"] = t.background
     for side in ("left", "bottom", "top", "right"):

@@ -33,6 +33,12 @@ def finalize_result(fig, ax, spec, style, stats=None, tables=None):
     if style.save is not None:
         files = save_result(fig, style.save, fmt=style.fmt,
                             dpi=style.dpi or defaults.DPI_SAVE)
+    # skip tight_layout for multi-panel plots (upset) and colorbar (heatmap)
+    if spec.kind not in ("upset", "heatmap"):
+        try:
+            fig.tight_layout()
+        except Exception:
+            pass
     return LvResult(fig=fig, ax=ax, spec=spec, stats=list(stats or []),
                     tables=dict(tables or {}), files=files)
 
@@ -46,9 +52,17 @@ def apply_labels(ax, spec, style):
         ax.set_xlabel(style.xlabel)
     if style.ylabel:
         ax.set_ylabel(style.ylabel)
-    if style.show_grid is not None:
-        ax.grid(style.show_grid, color="#dddddd", linewidth=0.6)
+    # grid: only when user explicitly passes show_grid=True
+    # (avoid grid over scatter/line/heatmap data)
+    if style.show_grid is True:
+        ax.grid(True, which="major", color="#dddddd", linewidth=0.6)
         ax.set_axisbelow(True)
+    else:
+        ax.grid(False)
+    # disable minor ticks (no "small cells")
+    ax.minorticks_off()
+    # disable ticks on top and right
+    ax.tick_params(which="both", top=False, right=False)
 
     # respect theme spines (mpl rcParams only apply to new axes)
     theme = style.theme if hasattr(style, "theme") else None

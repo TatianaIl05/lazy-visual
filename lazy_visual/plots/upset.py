@@ -27,17 +27,15 @@ def upset(data, *, sets=None, item=None, set_col=None,
     membership = _to_membership(data, sets=sets, item=item, set_col=set_col)
     set_names = list(membership.columns)
 
-    _w, _h = st.figsize or (8.5, 5.5)
-    if _w < 7.5:
-        _w = 7.5
-    if _h < 5.0:
-        _h = 5.0
-    fig = plt.figure(figsize=(_w, _h), dpi=st.dpi or t.dpi,
-                     constrained_layout=False)
-    # generous wspace so axes labels don't collide
-    gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 4.0],
+    _w, _h = st.figsize or (7.5, 5.0)
+    if _w < 6.5:
+        _w = 6.5
+    if _h < 4.5:
+        _h = 4.5
+    fig = plt.figure(figsize=(_w, _h), dpi=st.dpi or t.dpi)
+    gs = fig.add_gridspec(2, 2, width_ratios=[0.7, 4.0],
                           height_ratios=[2, 2],
-                          hspace=0.05, wspace=0.25,
+                          hspace=0.05, wspace=0.15,
                           left=0.14, right=0.97, top=0.88, bottom=0.10)
     ax_sets = fig.add_subplot(gs[0, 0])
     ax_bars = fig.add_subplot(gs[0, 1])
@@ -49,11 +47,12 @@ def upset(data, *, sets=None, item=None, set_col=None,
 
     if inter.empty:
         for a in axes.values():
-            a.set_xticks([]); a.set_yticks([])
+            a.set_xticks([])
+            a.set_yticks([])
         ax_bars.text(0.5, 0.5, f"No intersections with size >= {min_size}",
                      ha="center", va="center", transform=ax_bars.transAxes)
         warnings.warn(f"[LV-W504] No intersections with size >= {min_size}.",
-            LvDataWarning, stacklevel=3)
+                      LvDataWarning, stacklevel=3)
         spec = PlotSpec(kind="upset", panels=list(axes.keys()),
                         axes=AxesSpec(title=st.title))
         return finalize_result(fig, axes, spec, st,
@@ -70,11 +69,11 @@ def upset(data, *, sets=None, item=None, set_col=None,
     ypos = {name: n_sets - 1 - i for i, name in enumerate(set_names)}
     ylim = (-0.5, n_sets - 0.5)
 
-    # ---------- BARS ----------
+    # --- bars panel ---
     ax_bars.bar(xs, inter["size"], color=main_color,
                 alpha=st.alpha or t.alpha, edgecolor="black", linewidth=0.4)
     ax_bars.set_xticks([])
-    ax_bars.set_ylabel(st.ylabel or "Intersection size", fontsize=8, labelpad=6)
+    ax_bars.set_ylabel(st.ylabel or "Intersection size", fontsize=8)
     ax_bars.set_xlim(-0.5, n - 0.5)
     for x, s in zip(xs, inter["size"]):
         ax_bars.text(x, s, str(int(s)), ha="center", va="bottom", fontsize=8)
@@ -82,7 +81,7 @@ def upset(data, *, sets=None, item=None, set_col=None,
     ax_bars.spines["bottom"].set_visible(False)
     ax_bars.tick_params(bottom=False)
 
-    # ---------- MATRIX ----------
+    # --- matrix panel ---
     ax_matrix.set_xlim(-0.5, n - 0.5)
     ax_matrix.set_ylim(ylim)
     for j, pattern in enumerate(inter["pattern"]):
@@ -104,8 +103,7 @@ def upset(data, *, sets=None, item=None, set_col=None,
         ax_matrix.spines[side].set_visible(False)
     ax_matrix.tick_params(left=False)
 
-    # ---------- SETS (left) ----------
-    # Bars grow LEFT (x inverted) with POSITIVE values: 0..max
+    # --- sets panel ---
     sizes = membership.sum(axis=0)
     y_positions = [ypos[name] for name in set_names]
     ax_sets.barh(y_positions, sizes.values, color=main_color,
@@ -115,24 +113,27 @@ def upset(data, *, sets=None, item=None, set_col=None,
     ax_sets.set_ylim(ylim)
     smax = float(sizes.max()) if len(sizes) else 1.0
     ax_sets.set_xlim(0, smax * 1.05)
-    ax_sets.invert_xaxis()   # x=0 on the RIGHT, positive values grow LEFT
+    ax_sets.invert_xaxis()
     ax_sets.set_xlabel(st.xlabel or "Set size", fontsize=8, labelpad=4)
-
-    # Y-axis on the RIGHT side (between sets and bars)
     ax_sets.yaxis.set_ticks_position("right")
     ax_sets.yaxis.set_label_position("right")
     for side in ("left", "top", "bottom"):
         ax_sets.spines[side].set_visible(False)
     ax_sets.spines["right"].set_visible(True)
 
-    # labels centered inside each bar: "A (5)"
     for name, size in zip(set_names, sizes.values):
         ax_sets.text(size / 2.0, ypos[name], f"{name} ({int(size)})",
                      va="center", ha="center", fontsize=8, color="black")
 
+    # turn off grid / minor ticks on all panels
+    for _ax in (ax_sets, ax_bars, ax_matrix):
+        _ax.minorticks_off()
+        _ax.tick_params(which="both", top=False, right=False)
+        _ax.grid(False)
+
     spec = PlotSpec(kind="upset", panels=list(axes.keys()),
-        layers=[Layer("bar", {"size": "size"}),
-                Layer("dot_matrix", {"pattern": "pattern"})],
-        axes=AxesSpec(title=st.title))
+                    layers=[Layer("bar", {"size": "size"}),
+                            Layer("dot_matrix", {"pattern": "pattern"})],
+                    axes=AxesSpec(title=st.title))
     return finalize_result(fig, axes, spec, st,
                            tables={"intersections": inter})

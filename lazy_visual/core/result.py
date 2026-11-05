@@ -25,6 +25,15 @@ class LvResult:
         return self.files
 
     def show(self) -> None:
+        """Display the figure inline (Jupyter/Colab) or via plt.show()."""
+        # Jupyter/Colab: display the figure directly
+        try:
+            from IPython.display import display
+            display(self.fig)
+            return
+        except ImportError:
+            pass
+        # fallback: interactive backend
         import matplotlib.pyplot as plt
         plt.show()
 

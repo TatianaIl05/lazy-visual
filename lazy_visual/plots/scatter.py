@@ -40,11 +40,10 @@ def scatterplot(data, *, x, y, hue=None, size_by=None, fit="none", **style):
             if st.show_legend:
                 ax.legend(
                     loc="center left",
-                    bbox_to_anchor=(1.02, 0.5),
+                    bbox_to_anchor=(1.05, 0.5),
                     frameon=False,
                     fontsize=7,
                 )
-                fig.subplots_adjust(right=0.78)
             layers.append(Layer("point", {"x": x, "y": y, "hue": hue}))
     else:
         color = st.color or palette[0]
