@@ -81,7 +81,7 @@ import lazy_visual as lv
 
 
 
-!\[Импорт библиотеки в Jupyter](screenshots/01\_import.png)
+![Импорт библиотеки в Jupyter](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/01_import.png)
 
 
 
@@ -183,7 +183,7 @@ result = lv.raincloud(
 
 
 
-!\[Подготовка данных](screenshots/02a\_raincloud\_data.png)
+![Подготовка данных](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/02a_raincloud_data.png)
 
 
 
@@ -191,7 +191,7 @@ result = lv.raincloud(
 
 
 
-!\[Вызов raincloud](screenshots/02b\_raincloud\_call.png)
+![Вызов raincloud](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/02b_raincloud_call.png)
 
 
 
@@ -199,7 +199,7 @@ result = lv.raincloud(
 
 
 
-!\[Результат raincloud](screenshots/02c\_raincloud\_result.png)
+![Результат raincloud](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/02c_raincloud_result.png)
 
 
 
@@ -303,7 +303,7 @@ model_b: AUC 0.813 [0.781, 0.845]
 
 
 
-!\[Подготовка данных для ROC](screenshots/03a\_roc\_data.png)
+![Подготовка данных для ROC](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/03a_roc_data.png)
 
 
 
@@ -311,7 +311,7 @@ model_b: AUC 0.813 [0.781, 0.845]
 
 
 
-!\[Результат ROC](screenshots/03b\_roc\_result.png)
+![Результат ROC](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/03b_roc_result.png)
 
 
 
@@ -430,7 +430,7 @@ result = lv.upset(
 
 
 
-!\[Данные для UpSet](screenshots/04a\_upset\_data.png)
+![Данные для UpSet](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/04a_upset_data.png)
 
 
 
@@ -438,7 +438,7 @@ result = lv.upset(
 
 
 
-!\[Результат UpSet](screenshots/04b\_upset\_result.png)
+![Результат UpSet](https://github.com/TatianaIl05/lazy-visual/raw/main/screenshots/04b_upset_result.png)
 
 
 

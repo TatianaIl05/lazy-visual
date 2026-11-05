@@ -35,10 +35,10 @@ def upset(data, *, sets=None, item=None, set_col=None,
     fig = plt.figure(figsize=(_w, _h), dpi=st.dpi or t.dpi,
                      constrained_layout=False)
     # generous wspace so axes labels don't collide
-    gs = fig.add_gridspec(2, 2, width_ratios=[1.2, 4.0],
+    gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 4.0],
                           height_ratios=[2, 2],
-                          hspace=0.05, wspace=0.32,
-                          left=0.16, right=0.96, top=0.88, bottom=0.10)
+                          hspace=0.05, wspace=0.25,
+                          left=0.14, right=0.97, top=0.88, bottom=0.10)
     ax_sets = fig.add_subplot(gs[0, 0])
     ax_bars = fig.add_subplot(gs[0, 1])
     ax_matrix = fig.add_subplot(gs[1, 1])
@@ -74,7 +74,7 @@ def upset(data, *, sets=None, item=None, set_col=None,
     ax_bars.bar(xs, inter["size"], color=main_color,
                 alpha=st.alpha or t.alpha, edgecolor="black", linewidth=0.4)
     ax_bars.set_xticks([])
-    ax_bars.set_ylabel(st.ylabel or "Intersection size", fontsize=8)
+    ax_bars.set_ylabel(st.ylabel or "Intersection size", fontsize=8, labelpad=6)
     ax_bars.set_xlim(-0.5, n - 0.5)
     for x, s in zip(xs, inter["size"]):
         ax_bars.text(x, s, str(int(s)), ha="center", va="bottom", fontsize=8)
@@ -116,7 +116,7 @@ def upset(data, *, sets=None, item=None, set_col=None,
     smax = float(sizes.max()) if len(sizes) else 1.0
     ax_sets.set_xlim(0, smax * 1.05)
     ax_sets.invert_xaxis()   # x=0 on the RIGHT, positive values grow LEFT
-    ax_sets.set_xlabel(st.xlabel or "Set size", fontsize=8, labelpad=6)
+    ax_sets.set_xlabel(st.xlabel or "Set size", fontsize=8, labelpad=4)
 
     # Y-axis on the RIGHT side (between sets and bars)
     ax_sets.yaxis.set_ticks_position("right")

@@ -140,7 +140,7 @@ def _draw_brackets(ax, cats, stats, offset=0.0):
     span = ymax - ymin
     n = len(pairs)
     # generous spacing: each bracket gets >= 10% of span, or 0.5/n + 0.05
-    step = span * max(0.06, 0.04 + 0.02 / n)
+    step = span * (0.14 + 0.04 / max(n, 1))
     base = ymax
     idx_map = {c: i for i, c in enumerate(cats)}
     for i, s in enumerate(pairs):
