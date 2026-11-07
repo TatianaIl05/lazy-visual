@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lazy-visual"
-version = "0.1.2"
+version = "0.1.3"
 description = "One-line statistical plots with built-in stats."
 readme = "README.md"
 license = { text = "MIT" }

@@ -59,10 +59,10 @@ def heatmap(data, *, x=None, y=None, value=None, corr=None, annot=None,
         else:
             vmax = 1.0
         im = ax.imshow(arr, cmap=cmap_name, vmin=-vmax, vmax=vmax,
-                       aspect="auto")
+                       aspect="auto", interpolation="nearest")
         threshold = vmax
     else:
-        im = ax.imshow(arr, cmap=cmap_name, aspect="auto")
+        im = ax.imshow(arr, cmap=cmap_name, aspect="auto", interpolation="nearest")
         threshold = float(np.nanmax(np.abs(arr))) if arr.size else 1.0
 
     fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)

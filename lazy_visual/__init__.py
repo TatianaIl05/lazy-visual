@@ -12,7 +12,7 @@ from ._errors import (
 )
 from ._options import Options, get_options, set_options
 
-__version__ = "0.1.0"
+__version__ = "0.1.3"
 
 __all__ = [
     "LvArgumentError",
