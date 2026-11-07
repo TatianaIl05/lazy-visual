@@ -471,6 +471,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#012" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#011" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.1
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#010" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -478,23 +511,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="0.1.0">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Added
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -533,6 +549,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#012" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#011" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.1
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#010" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -540,23 +589,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="0.1.0">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#added" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Added
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -581,15 +613,44 @@
 
 
 <h1 id="changelog">Changelog</h1>
+<h2 id="013">0.1.3</h2>
+<ul>
+<li><code>heatmap</code>: <code>interpolation="nearest"</code> for deterministic cell rendering across matplotlib versions</li>
+<li><code>README</code>: full rewrite — install, 3 examples (raincloud, ROC, UpSet), badges, Colab badge</li>
+<li><code>examples/demo.ipynb</code>: outputs regenerated for <code>lazy-visual==0.1.3</code></li>
+<li>bump to 0.1.3</li>
+</ul>
+<h2 id="012">0.1.2</h2>
+<ul>
+<li><code>heatmap</code>: RdBu_r default, robust <code>vmax</code>, grid off over data, larger annotation fonts</li>
+<li><code>upset</code>: <code>A (n)</code> labels inside bars, Y-axis on the right, grid off, fixed indentation</li>
+<li><code>raincloud</code>: geometric layout (half-violin + box + jittered dots) without overlap</li>
+<li><code>box</code>: adaptive p-value bracket spacing, wider caps, smaller fliers</li>
+<li><code>violin</code>: black quartiles/median (no red default), no duplicate bracket text</li>
+<li><code>scatter</code>: 95% CI band for linear fit, legend outside axes</li>
+<li><code>distribution</code>: transparent hist, colored KDE lines, external legend</li>
+<li><code>roc</code>: DeLong via <code>scipy.rankdata</code>, thinned plot for fast rendering, legend outside</li>
+<li><code>core/style.py</code>: disabled minor ticks, <code>grid.which = "major"</code> only</li>
+<li><code>_common.py</code>: grid only when <code>show_grid=True</code>, no <code>tight_layout</code> for multi-panel (<code>upset</code>) or colorbar (<code>heatmap</code>)</li>
+<li>bump to 0.1.2</li>
+</ul>
+<h2 id="011">0.1.1</h2>
+<ul>
+<li><code>LvResult.show()</code>: no-op in Jupyter inline backends (avoid double figure)</li>
+<li><code>render/mpl.py</code>: removed forced <code>Agg</code> backend so Jupyter/Colab auto-displays</li>
+<li><code>scatter</code> / <code>roc</code> / <code>distribution</code>: legend outside axes without <code>tight_layout</code> warnings</li>
+<li>bump to 0.1.1</li>
+</ul>
 <h2 id="010">0.1.0</h2>
 <p>First public release.</p>
-<h3 id="added">Added</h3>
 <ul>
-<li><code>scatterplot</code>, <code>distribution</code>, <code>box</code>, <code>violin</code>, <code>raincloud</code>, <code>heatmap</code>, <code>upset</code>, <code>roc</code></li>
-<li><code>lv.load</code> (csv/tsv/parquet/excel/json + URL)</li>
-<li>4 themes: default, nature, apa, dark</li>
-<li>Built-in stats: Mann-Whitney U, Welch t-test, Kruskal-Wallis, Holm correction, Cohen's d, KDE, DeLong &amp; bootstrap AUC CI</li>
-<li>Error codes LV-E101..E310, LV-W501..W504</li>
+<li>8 plot functions: <code>scatterplot</code>, <code>distribution</code>, <code>box</code>, <code>violin</code>, <code>raincloud</code>, <code>heatmap</code>, <code>upset</code>, <code>roc</code></li>
+<li>built-in stats: Mann-Whitney U, Welch t-test, Kruskal-Wallis, Holm correction, Cohen's d, DeLong &amp; bootstrap AUC CI</li>
+<li>4 themes: <code>default</code>, <code>nature</code>, <code>apa</code>, <code>dark</code></li>
+<li>export: PNG / SVG / PDF (atomic writes)</li>
+<li><code>lv.load()</code> for CSV, TSV, Parquet, Excel, JSON, HTTP(S) URL</li>
+<li><code>LvResult</code> with <code>fig</code>, <code>ax</code>, <code>spec</code>, <code>stats</code>, <code>tables</code>, <code>files</code></li>
+<li>22 error / warning codes (<code>LV-E101..E310</code>, <code>LV-W501..W504</code>)</li>
 </ul>
 
 
